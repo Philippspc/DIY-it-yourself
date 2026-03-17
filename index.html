@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIY it yourself | Global Maker Network</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="logo" onclick="showSection('gateway')">DIY it yourself</div>
+        <div class="nav-links">
+            <a href="#" onclick="showSection('gateway')">Search</a>
+            <a href="#" onclick="showSection('supporters')">Supporters</a>
+            <a href="#" onclick="showSection('legal')">Legal</a>
+            <button id="login-btn" onclick="handleProfileClick()">Login</button>
+        </div>
+    </nav>
+
+    <div id="login-modal" class="modal" style="display:none;">
+        <div class="card">
+            <h2>Maker Login</h2>
+            <p>Join the community or sign in.</p>
+            <input type="text" id="username-input" placeholder="Username">
+            <input type="password" id="password-input" placeholder="Password">
+            <button onclick="performLogin()">Sign In / Register</button>
+            <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.6;">(Google/Apple Login coming soon)</p>
+            <button onclick="toggleLogin()" class="cancel">Cancel</button>
+        </div>
+    </div>
+
+    <div id="gateway" class="page-section">
+        <div class="card">
+            <h1>DIY it yourself</h1>
+            <p>Stop scrolling. Start building.</p>
+            <input type="text" id="search-input" placeholder="Search for projects or makers..." onkeypress="if(event.key === 'Enter') handleSearch()">
+            <div class="button-group">
+                <button onclick="handleSearch()">Find Solutions</button>
+                <button class="secondary-btn" onclick="uploadPost()">+ Share Project</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-content" class="page-section" style="display: none;">
+        <div id="results-container"></div>
+    </div>
+
+    <div id="profile" class="page-section" style="display: none;">
+        <div class="card wide">
+            <div class="profile-header">
+                <div class="pfp-container">
+                    <div id="pfp-display" class="pfp-circle">🛠️</div>
+                    <div class="edit-icon" onclick="openPfpDialog()">✏️</div>
+                </div>
+                <div class="profile-text">
+                    <h2 id="profile-name-display">Maker Name</h2>
+                    <p id="profile-bio-display">Tell the world about your crafts.</p>
+                    <span class="rank-badge">Rank: Apprentice</span>
+                </div>
+            </div>
+            <hr>
+            <h3>Profile Settings</h3>
+            <div class="settings-form">
+                <input type="text" id="edit-bio" placeholder="Update your bio...">
+                <button onclick="saveProfile()">Save Changes</button>
+                <button onclick="logout()" class="cancel">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="supporters" class="page-section" style="display: none;">
+        <div class="card wide">
+            <h1>Founding Makers</h1>
+            <p>Big thanks to our early supporters from Kickstarter & GoFundMe:</p>
+            <ul class="supporter-list">
+                <li>🌟 <strong>Max Mustermann</strong> - Platinum Supporter</li>
+                <li>🛠️ <strong>Anna Schmidt</strong> - Early Bird Maker</li>
+                <li>🚀 <strong>Thomas Tech</strong> - Beta Tester</li>
+                <li>✨ <em>Your name here? Support us now!</em></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="legal" class="page-section" style="display: none;">
+        <div class="card wide">
+            <h1>Legal Notice (Impressum)</h1>
+            <p><strong>Information according to § 5 TMG:</strong></p>
+            <p>DIY it yourself Project Group<br>Musterstraße 42<br>12345 Berlin</p>
+            <p><strong>Contact:</strong><br>Email: admin@diy-it-yourself.com</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
