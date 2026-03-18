@@ -92,4 +92,62 @@
 
     <script src="script.js"></script>
 </body>
+</html>            <div class="button-group">
+                <button onclick="handleSearch()">Find Solutions</button>
+                <button class="secondary-btn" onclick="uploadPost()">+ Share Project</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-content" class="page-section" style="display: none;">
+        <div id="results-container"></div>
+    </div>
+
+    <div id="profile" class="page-section" style="display: none;">
+        <div class="card wide">
+            <div class="profile-header">
+                <div class="pfp-container">
+                    <div id="pfp-display" class="pfp-circle">🛠️</div>
+                    <div class="edit-icon" onclick="openPfpDialog()">✏️</div>
+                </div>
+                <div class="profile-text">
+                    <h2 id="profile-name-display">Maker Name</h2>
+                    <p id="profile-bio-display">Tell the world about your crafts.</p>
+                    <span class="rank-badge">Rank: Apprentice</span>
+                </div>
+            </div>
+            <hr>
+            <h3>Profile Settings</h3>
+            <div class="settings-form">
+                <input type="text" id="edit-bio" placeholder="Update your bio...">
+                <button onclick="saveProfile()">Save Changes</button>
+                <button onclick="logout()" class="cancel">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="supporters" class="page-section" style="display: none;">
+        <div class="card wide">
+            <h1>Founding Makers</h1>
+            <p>Big thanks to our early supporters from Kickstarter & GoFundMe:</p>
+            <ul class="supporter-list">
+                <li>🌟 <strong>Max Mustermann</strong> - Platinum Supporter</li>
+                <li>🛠️ <strong>Anna Schmidt</strong> - Early Bird Maker</li>
+                <li>🚀 <strong>Thomas Tech</strong> - Beta Tester</li>
+                <li>✨ <em>Your name here? Support us now!</em></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="legal" class="page-section" style="display: none;">
+        <div class="card wide">
+            <h1>Legal Notice (Impressum)</h1>
+            <p><strong>Information according to § 5 TMG:</strong></p>
+            <p>DIY it yourself Project Group<br>Musterstraße 42<br>12345 Berlin</p>
+            <p><strong>Contact:</strong><br>Email: admin@diy-it-yourself.com</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
