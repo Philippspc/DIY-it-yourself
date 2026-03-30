@@ -1,147 +1,107 @@
-// --- 1. DATA STORAGE ---
 let diyDatabase = JSON.parse(localStorage.getItem('diy_data')) || [
-    { id: 1, title: "Build a Garden Bed", content: "https://youtube.com/watch?v=diy-garden", likes: 0, dislikes: 0, type: "extern", image: "" }
+    { id: 1, title: "Garden Bed", content: "Classic wooden structure.", type: "intern" }
 ];
-
 let allUsers = JSON.parse(localStorage.getItem('diy_all_users')) || [
-    { name: "Admin", bio: "Creator of this app.", pfp: "", pass: "1234" }
+    { name: "Admin", bio: "Creator.", pfp: "", pass: "1234" }
 ];
-
 let currentUser = JSON.parse(localStorage.getItem('diy_current_session')) || null;
 
-// --- 2. NAVIGATION ---
+// HIER KOMMT DEINE VERCEL URL REIN (später)
+const BACKEND_URL = "https://DEIN-PROJEKT.vercel.app/api/ask";
+
 function showSection(id) {
     document.querySelectorAll('.page-section').forEach(s => s.style.display = 'none');
-    const target = document.getElementById(id);
-    if (target) target.style.display = 'flex';
+    document.getElementById(id).style.display = 'flex';
 }
 
 function handleProfileClick() {
-    if (currentUser) {
-        updateProfileUI();
-        showSection('profile');
-    } else {
-        toggleLogin();
-    }
+    if (currentUser) { updateProfileUI(); showSection('profile'); } 
+    else { toggleLogin(); }
 }
 
-// --- 3. LOGIN & AUTH ---
 function toggleLogin() {
-    const modal = document.getElementById('login-modal');
-    modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
+    const m = document.getElementById('login-modal');
+    m.style.display = (m.style.display === 'none') ? 'flex' : 'none';
 }
 
 function performLogin() {
     const name = document.getElementById('username-input').value.trim();
     const pass = document.getElementById('password-input').value.trim();
+    if (!name || !pass) return alert("Please enter name and password!");
 
-    if (!name || !pass) return alert("Please fill all fields!");
+    let user = allUsers.find(u => u.name.toLowerCase() === name.toLowerCase());
 
-    let foundUser = allUsers.find(u => u.name.toLowerCase() === name.toLowerCase());
-
-    if (foundUser) {
-        if (foundUser.pass === pass) {
-            currentUser = foundUser;
+    if (user) {
+        // PASSWORT CHECK
+        if (user.pass === pass) {
+            currentUser = user;
+            localStorage.setItem('diy_current_session', JSON.stringify(currentUser));
+            location.reload();
         } else {
-            return alert("Wrong password!");
+            alert("Wrong password! Access denied.");
         }
     } else {
-        currentUser = { name: name, bio: "New maker in the house.", pfp: "", pass: pass };
+        // REGISTER NEW USER
+        currentUser = { name: name, bio: "New maker.", pfp: "", pass: pass };
         allUsers.push(currentUser);
         localStorage.setItem('diy_all_users', JSON.stringify(allUsers));
-    }
-
-    localStorage.setItem('diy_current_session', JSON.stringify(currentUser));
-    location.reload();
-}
-
-function logout() {
-    localStorage.removeItem('diy_current_session');
-    location.reload();
-}
-
-// --- 4. PROFILE EDIT ---
-function openPfpDialog() {
-    const newPfp = prompt("Enter Image URL for your profile picture:");
-    if (newPfp !== null) {
-        currentUser.pfp = newPfp;
-        saveToGlobalUsers();
-        updateProfileUI();
+        localStorage.setItem('diy_current_session', JSON.stringify(currentUser));
+        location.reload();
     }
 }
 
-function saveProfile() {
-    currentUser.bio = document.getElementById('edit-bio').value || currentUser.bio;
-    saveToGlobalUsers();
-    alert("Profile Updated!");
-    updateProfileUI();
-}
-
-function saveToGlobalUsers() {
-    const idx = allUsers.findIndex(u => u.name === currentUser.name);
-    if (idx !== -1) allUsers[idx] = currentUser;
-    localStorage.setItem('diy_all_users', JSON.stringify(allUsers));
-    localStorage.setItem('diy_current_session', JSON.stringify(currentUser));
-}
+function logout() { localStorage.removeItem('diy_current_session'); location.reload(); }
 
 function updateProfileUI() {
     if (!currentUser) return;
     document.getElementById('profile-name-display').innerText = currentUser.name;
     document.getElementById('profile-bio-display').innerText = currentUser.bio;
-    document.getElementById('login-btn').innerText = "Profile: " + currentUser.name;
-    const pfp = document.getElementById('pfp-display');
-    if (currentUser.pfp) {
-        pfp.style.backgroundImage = `url('${currentUser.pfp}')`;
-        pfp.innerText = "";
-    }
+    document.getElementById('login-btn').innerText = currentUser.name;
+    if (currentUser.pfp) document.getElementById('pfp-display').style.backgroundImage = `url('${currentUser.pfp}')`;
 }
 
-// --- 5. SEARCH LOGIC ---
 function handleSearch() {
-    const query = document.getElementById('search-input').value.trim().toLowerCase();
-    if (query.length < 1) return;
-    showSection('app-content');
-    renderResults(query);
+    const q = document.getElementById('search-input').value.trim();
+    if (q) { showSection('app-content'); renderResults(q.toLowerCase()); }
 }
 
 function renderResults(query) {
     const container = document.getElementById('results-container');
     container.innerHTML = "";
-    
-    // Search Users
-    const usersFound = allUsers.filter(u => u.name.toLowerCase().includes(query));
-    usersFound.forEach(user => {
-        container.innerHTML += `
-            <div class="video-card" style="border: 2px solid var(--bright-lime); background: #f0f7f0;">
-                <div style="padding: 20px; text-align: center;">
-                    <div style="width: 60px; height: 60px; margin: 0 auto; border-radius: 50%; background: #eee; background-image: url('${user.pfp}'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center;">
-                        ${!user.pfp ? '👤' : ''}
-                    </div>
-                    <h3>${user.name}</h3>
-                    <p style="font-size: 0.8rem;">${user.bio}</p>
-                </div>
-            </div>`;
+    const posts = diyDatabase.filter(p => p.title.toLowerCase().includes(query));
+
+    posts.forEach(p => {
+        container.innerHTML += `<div class="video-card"><h3>${p.title}</h3><p>${p.content}</p></div>`;
     });
 
-    // Search Projects
-    const postsFound = diyDatabase.filter(p => p.title.toLowerCase().includes(query));
-    postsFound.forEach(item => {
-        const isExtern = item.type === "extern";
-        container.innerHTML += `
-            <div class="video-card">
-                <div onclick="${isExtern ? `window.open('${item.content}', '_blank')` : ''}" style="cursor: pointer; padding: 15px;">
-                    <h3>${item.title}</h3>
-                    <p style="font-size: 0.85rem; color: #666;">${item.content}</p>
-                </div>
-            </div>`;
-    });
+    if (posts.length === 0) askAI(query);
+}
+
+async function askAI(query) {
+    const container = document.getElementById('results-container');
+    const aiCard = document.createElement('div');
+    aiCard.className = "video-card";
+    aiCard.style.gridColumn = "1/-1";
+    aiCard.innerHTML = "<h3>🤖 AI is thinking...</h3>";
+    container.appendChild(aiCard);
+
+    try {
+        const response = await fetch(BACKEND_URL, {
+            method: "POST",
+            body: JSON.stringify({ query: query })
+        });
+        const data = await response.json();
+        aiCard.innerHTML = `<h3>🤖 AI Guide: ${query}</h3><p>${data.text}</p>`;
+    } catch (e) {
+        aiCard.innerHTML = "<h3>🤖 AI connection pending...</h3><p>Please search again in a moment.</p>";
+    }
 }
 
 function uploadPost() {
-    const title = prompt("Project Title:");
-    const content = prompt("Description or URL:");
-    if (title && content) {
-        diyDatabase.push({ id: Date.now(), title, content, likes: 0, dislikes: 0, type: "intern" });
+    const t = prompt("Title:");
+    const c = prompt("Content:");
+    if (t && c) {
+        diyDatabase.push({ id: Date.now(), title: t, content: c, type: "intern" });
         localStorage.setItem('diy_data', JSON.stringify(diyDatabase));
         location.reload();
     }
